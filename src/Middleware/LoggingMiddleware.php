@@ -7,6 +7,7 @@ use Bilfeldt\LaravelHttpClientLogger\HttpLoggingFilterInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class LoggingMiddleware
 {
@@ -39,6 +40,9 @@ class LoggingMiddleware
                     function (ResponseInterface $response) use ($context, $config, $request, $start) {
                         $sec = microtime(true) - $start;
 
+                        $body = $this->encoding($response->getBody());
+                        $response->withBody($body);
+
                         if ($this->filter->shouldLog($request, $response, $sec, $context, $config)) {
                             $this->logger->log($request, $response, $sec, $context, $config);
                         }
@@ -48,5 +52,20 @@ class LoggingMiddleware
                 );
             };
         };
+    }
+
+    private function encoding(StreamInterface $stream): StreamInterface
+    {
+        if (!$stream->isWritable()) {
+            throw new \InvalidArgumentException('Output stream must be writable');
+        }
+        $encode = array('UTF-8','EUC-KR');
+        $content = $stream->getContents();
+        $str_encode = mb_detect_encoding($content, $encode);
+        if($str_encode === 'EUC-KR') {
+            $data = mb_convert_encoding($content,'UTF-8',$str_encode);
+            $stream->write($data);
+        }
+        return $stream;
     }
 }

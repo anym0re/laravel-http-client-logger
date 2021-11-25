@@ -1,24 +1,7 @@
 {
-    "name": "bilfeldt/laravel-http-client-logger",
+    "name": "anym0re/laravel-http-client-logger",
     "description": "A logger for the Laravel HTTP Client",
-    "keywords": [
-        "bilfeldt",
-        "laravel-http-client-logger",
-        "laravel",
-        "guzzle",
-        "log",
-        "logging",
-        "psr3"
-    ],
-    "homepage": "https://github.com/bilfeldt/laravel-http-client-logger",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Anders Bilfeldt",
-            "email": "abilfeldt@gmail.com",
-            "role": "Developer"
-        }
-    ],
     "require": {
         "php": "^7.4|^8.0",
         "guzzlehttp/guzzle": "^7.2",
