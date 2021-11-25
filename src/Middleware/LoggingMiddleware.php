@@ -59,8 +59,13 @@ class LoggingMiddleware
         if (!$stream->isWritable()) {
             throw new \InvalidArgumentException('Output stream must be writable');
         }
-        $data = mb_convert_encoding($stream->getContents(), "UTF-8");
-        $stream->write($data);
+        $encode = array('UTF-8','EUC-KR');
+        $content = $stream->getContents();
+        $str_encode = mb_detect_encoding($content, $encode);
+        if($str_encode === 'EUC-KR') {
+            $data = mb_convert_encoding($content,'UTF-8',$str_encode);
+            $stream->write($data);
+        }
         return $stream;
     }
 }
